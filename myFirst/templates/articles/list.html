@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}List{% endblock %}
+
+
+{% block content %}
+<h3 style="padding-left: 10px;">Актуальные статьи</h3>
+
+
+<div class="list-group">
+    {% for article in latest_articles %}
+    <div class="mb-2">
+    <!-- <a href="{% url 'detail' article.id %}" class="list-group-item list-group-item-action" aria-current="true"> -->
+        <a href="/{{article.id}}" class="list-group-item list-group-item-action" aria-current="true">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{article.article_title}}</h5>
+          <small>{{article.pub_date}}</small>
+        </div>
+        <p class="mb-1"></p>
+        <small>By {{article.author_name}}</small>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

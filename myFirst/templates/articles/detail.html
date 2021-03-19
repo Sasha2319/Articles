@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %} {{article.article_title}} {% endblock %}
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+body {
+    background: #eee
+}
+
+.date {
+    font-size: 11px
+}
+
+.comment-text {
+    font-size: 12px
+}
+
+.fs-12 {
+    font-size: 12px
+}
+
+.shadow-none {
+    box-shadow: none
+}
+
+.name {
+    color: #007bff
+}
+
+.cursor:hover {
+    color: blue
+}
+
+.cursor {
+    cursor: pointer
+}
+
+.textarea {
+    resize: none
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="float-sm-left" style="width: 70%;"><h2 style="padding-left: 15px;">{{article.article_title}}</h2></div>
+
+
+
+<div style="float: left; margin-top: 6px; font-size:25px;"><em>{{article.pub_date}}</em>
+{% if article.was_published_recently %}
+<img src="https://image.flaticon.com/icons/png/512/57/57458.png" alt="NEW" width="50" style="margin-top: -3px;">
+{% endif %}
+</div>
+
+<div id="author_name" style="margin-right:30px; position:absolute; left: 1110px; top: 53px; font-size: 17px;">
+By {{article.author_name}}
+</div>
+
+<div id="article_image">
+{% if article.article_image %}
+<img src="{{article.article_image.url}}" alt="" style="max-width: 1100px;">
+{% endif %}
+</div>
+
+<div style="padding-left: 20px; padding-top: 15px; width: 70%;">{{article.article_text}}</div>
+
+{% if article.comment_set.all %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-12">
+{% for c in article.comment_set.all %}
+
+            <div class="d-flex flex-column comment-section">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                        <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">{{c.comment_author}}</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="comment-text">{{c.comment_text}}</p>
+                    </div>
+                </div>
+                <div class="bg-white">
+                    <div class="d-flex flex-row fs-12">
+
+                    </div>
+                </div>
+               
+            </div>
+
+{% endfor %}
+
+{% endif %}
+<div class="bg-light p-2">
+    <!-- <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div> -->
+
+
+    <!-- <form action="{% url 'leave_comment' article.id %}" method="POST"></form>
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">@</span>
+            </div>
+            <input type="text" name="name" class="form-control" required = "" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+          </div>
+          
+          <div class="input-group mb-3">
+            <input type="text" name="text" class="form-control" required = "" placeholder="Type your comment here:" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          </div>
+          
+
+          <button class="btn btn-primary btn-sm shadow-none">Post comment</button>
+          <button type="submit">A</button>
+          <input type="submit" value="OK">
+    </form> -->
+
+    <form action="{% url 'leave_comment' article.id %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="name">
+        <input type="text" name="text">
+        <input type="button" value="Ok">
+        <input type="submit" value="A">
+    </form>
+
+    
+</div>
+</div>
+</div>
+</div>
+<script>
+    function postComment(){
+        window.location.href=window.location.href + 'leave_comment'
+    }
+</script>
+{% endblock %}
+
