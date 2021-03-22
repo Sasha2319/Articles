@@ -30,7 +30,10 @@ SECRET_KEY = 'xxue3lb0h8oes5)8!=e(7r5s+vu7wr7o9s@r5i%r14t2*)vg23'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.88.18',
+    '6.tcp.ngrok.io'
+]
 
 
 # Application definition
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -123,6 +127,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+#crispy
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

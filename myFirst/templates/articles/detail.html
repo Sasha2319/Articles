@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
+{% csrf_token %}
 {% block title %} {{article.article_title}} {% endblock %}
 
 {% block content %}
@@ -76,7 +77,7 @@ By {{article.author_name}}
 
 <div id="article_image">
 {% if article.article_image %}
-<img src="{{article.article_image.url}}" alt="" style="max-width: 1100px;">
+<img src="{{article.article_image.url}}" alt="" style="max-width: 1100px; max-height: 700px;">
 {% endif %}
 </div>
 
@@ -86,6 +87,18 @@ By {{article.author_name}}
 <div class="container mt-5">
     <div class="d-flex justify-content-center row">
         <div class="col-md-12">
+
+            <!-- FORM -->
+            <form id="cmForm">
+                {% csrf_token %}
+                {{form|crispy}}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+
+
+        
+            <div id="commentsBox">
 {% for c in comments %}
 
             <div class="d-flex flex-column comment-section">
@@ -106,47 +119,19 @@ By {{article.author_name}}
             </div>
 
 {% endfor %}
-
+</div>
 {% endif %}
 <div class="bg-light p-2">
     <!-- <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div> -->
 
 
-    <!-- <form action="{% url 'leave_comment' article.id %}" method="POST"></form>
-        {% csrf_token %}
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">@</span>
-            </div>
-            <input type="text" name="name" class="form-control" required = "" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-          </div>
-          
-          <div class="input-group mb-3">
-            <input type="text" name="text" class="form-control" required = "" placeholder="Type your comment here:" aria-label="Recipient's username" aria-describedby="basic-addon2">
-          </div>
-          
+   
 
-          <button class="btn btn-primary btn-sm shadow-none">Post comment</button>
-          <button type="submit">A</button>
-          <input type="submit" value="OK">
-    </form> -->
 
-    <form action="{% url 'leave_comment' article.id %}" method="post">
-        {% csrf_token %}
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">@</span>
-            </div>
-            <input type="text" name="name" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-          </div>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">With textarea</span>
-            </div>
-            <textarea name="text" class="form-control" aria-label="With textarea"></textarea>
-          </div>
-          <button type="submit" style="margin-top: 5px; position: relative; float: right;" class="btn btn-primary">Post comment</button>
-    </form>
+
+
+
+
 
     
 </div>
@@ -154,9 +139,58 @@ By {{article.author_name}}
 </div>
 </div>
 <script>
-    function postComment(){
-        window.location.href=window.location.href + 'leave_comment'
-    }
+    console.log("Hello world");
+    const form = document.getElementById("cmForm");
+    console.log(form);
+
+    const comment_author = document.getElementById("id_comment_author");
+    const comment_text = document.getElementById("id_comment_text");
+
+    const csrf = document.getElementsByName("csrfmiddlewaretoken");
+    token = csrf[0].value
+    console.log(csrf);
+    console.log(token)
+
+    fr=form.addEventListener("submit", e=>{
+        e.preventDefault()
+        const fd = new FormData()
+        fd.append('csrfmiddlewaretoken', token)
+        fd.append('comment_author', comment_author.value)
+        fd.append('comment_text', comment_text.value)
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'detail' article.id %}",
+            enctype: 'multipart/form-data',
+            data: fd,
+            processData: false,
+            success: function(response){
+                console.log(response)
+                $(` <div class="d-flex flex-column comment-section">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                        <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">${response.comment_author}</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="comment-text">${response.comment_text}</p>
+                    </div>
+                </div>
+                <div class="bg-white">
+                    <div class="d-flex flex-row fs-12">
+
+                    </div>
+                </div>
+               
+            </div>`).insertAfter("#cmForm")
+            $("input").val("")
+            $("textarea").val("")
+                
+            },
+            cache: false,
+            contentType: false, 
+        })
+    })
+
 </script>
 {% endblock %}
 
