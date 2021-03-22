@@ -11,11 +11,14 @@ def index(request):
 
 def detail(request, article_id):
     article = Article.objects.get(id = article_id)
-    return render(request, 'articles/detail.html', {'article':article})
+    comments_list = article.comment_set.all()
+    comments = reversed(comments_list)
+    return render(request, 'articles/detail.html', {'article':article, 'comments':comments,})
 
 def leave_comment(request, article_id):
-    a = Article.objects.get(id=article_id)
-    a.comment_set.create(comment_author=request.POST.get('name'), comment_text=request.POST.get('text'))
+    if request.POST.get('name') and request.POST.get('text'):
+        a = Article.objects.get(id=article_id)
+        a.comment_set.create(comment_author=request.POST.get('name'), comment_text=request.POST.get('text'))
     b = '/' + str(article_id)
     return HttpResponseRedirect(b)
 
