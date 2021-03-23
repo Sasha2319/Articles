@@ -5,6 +5,11 @@ from django.urls import reverse
 from .forms import CommentForm
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.utils import timezone
+import datetime
+import pytz
+import locale
+import time
 
 # Create your views here.
 def index(request):
@@ -19,6 +24,8 @@ def detail(request, article_id):
     if request.is_ajax():
         data['comment_author'] = request.POST.get("comment_author")
         data['comment_text'] = request.POST.get("comment_text")
+        locale.setlocale(locale.LC_TIME, "ru_RU")
+        data['cDate'] = time.strftime("%d %B %Y г. %H:%M")
         a.comment_set.create(comment_author=data['comment_author'], comment_text=data['comment_text'])
         return JsonResponse(data)
     article = Article.objects.get(id = article_id)

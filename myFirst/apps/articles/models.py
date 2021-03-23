@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 from django.utils import timezone
+import django
 # Create your models here.
 
 class Article(models.Model):
@@ -21,7 +22,8 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     comment_author = models.CharField('имя автора', max_length=50)
     comment_text = models.TextField('текст комментария')
-    # comment_pub_date = models.DateTimeField('дата публикации комментария')
+    cDate = models.DateTimeField('дата публикации', auto_now_add=True)
+
 
     def __str__(self):
         return self.comment_author
