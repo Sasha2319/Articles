@@ -32,7 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '192.168.88.18',
-    '6.tcp.ngrok.io'
+    '6.tcp.ngrok.io',
+    'localhost',
+    '8.tcp.ngrok.io',
+    '192.168.0.89',
 ]
 
 

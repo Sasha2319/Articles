@@ -10,15 +10,22 @@ import datetime
 import pytz
 import locale
 import time
+from myFirst.settings import STATIC_URL
 
 # Create your views here.
 def index(request):
+    return HttpResponseRedirect('home')
+
+def home(request):
     latest_articles = Article.objects.order_by('-pub_date')
     return render(request, 'articles/list.html', {'latest_articles':latest_articles})
 
 @csrf_exempt
 def detail(request, article_id):
-    a = Article.objects.get(id=article_id)
+    try:
+        a = Article.objects.get(id=article_id)
+    except:
+        return render(request, 'articles/404.html', {'static': STATIC_URL, })
     form = CommentForm()
     data = {}
     if request.is_ajax():
@@ -32,7 +39,7 @@ def detail(request, article_id):
     comments_list = article.comment_set.all()
     comments = reversed(comments_list)
     # return HttpResponse("Hello")
-    return render(request, 'articles/detail.html', {'article': article, 'comments':comments, 'form': form, })
+    return render(request, 'articles/detail.html', {'article': article, 'comments':comments, 'form': form, 'static': STATIC_URL, })
 
 
 
