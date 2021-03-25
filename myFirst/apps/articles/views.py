@@ -18,7 +18,8 @@ def index(request):
 
 def home(request):
     latest_articles = Article.objects.order_by('-pub_date')
-    return render(request, 'articles/list.html', {'latest_articles':latest_articles})
+    return render(request, 'articles/list.html', {'latest_articles':latest_articles, 'static': STATIC_URL})
+
 
 @csrf_exempt
 def detail(request, article_id):
