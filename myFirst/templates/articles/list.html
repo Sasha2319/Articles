@@ -1,26 +1,168 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %}List{% endblock %}
+
+  {% block form %}
+<form class="form-inline my-2 my-lg-0" id="searchForm">
+    {% csrf_token %}
+  <input class="form-control mr-sm-2" type="text" name="q" id="searchText" placeholder="Search" aria-label="Search">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+  {% endblock %}
 
 
 {% block content %}
+<link rel="stylesheet" href="{{static}}articles/css/list.css">
+
+
+<!--<form id="searchForm">-->
+<!--    {% csrf_token %}-->
+<!--    <input type="text" name="q" id="searchText">-->
+<!--    <label for="searchText" style="float:left; margin-left:10px; margin-right:10px; font-size:20px">Search</label>-->
+<!--    <button type="submit" class="btn btn-primary">Search</button>-->
+<!--</form>-->
+
+
+
+
+
+
+
+
+
+
+
+
+{% if error %}
+<h4 style="color:red; padding-left: 10px;">Нет статьи по вашему запросу(</h4>
+{% endif %}
 <h3 style="padding-left: 10px;">Актуальные статьи</h3>
 
 
 <div class="list-group">
     {% for article in latest_articles %}
-    <div class="mb-2">
+    <div class="mb-2" id="list{{article.id}}">
     <!-- <a href="{% url 'detail' article.id %}" class="list-group-item list-group-item-action" aria-current="true"> -->
         <a href="/{{article.id}}" class="list-group-item list-group-item-action" aria-current="true">
         <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{article.article_title}}</h5>
+          <h5 class="mb-1" id="htmlTitle{{article.id}}">{{article.article_title}}</h5>
           <small>{{article.pub_date}}</small>
         </div>
         <p class="mb-1"></p>
         <small>By {{article.author_name}}</small>
+        <div id="htmlText{{article.id}}" class="htmlText"></div>
       </a>
     </div>
+    {% if script %}
+    <script>
+<!--  vars  -->
+    let textvar{{article.id}} = {{mText}}[{{article.id}}]
+    let titlevar{{article.id}} = {{mTitle}}[{{article.id}}]
+    let article_title{{article.id}} = "{{article.article_title}}"
+    let article_text{{article.id}} = `{{article.article_text}}`
+    let data{{article.id}} = ""
+    let q{{article.id}} = "{{q}}"
+
+<!--split text-->
+    let sentences{{article.id}} = article_text{{article.id}}.replace(/&quot;/g, '').replace(/\n/g, ' ').split(".")
+
+<!--  console logs  -->
+    console.log(`Id: {{article.id}}`)
+    console.log(`Text: ${textvar{{article.id}}}`)
+    console.log(`Title: ${titlevar{{article.id}}}`)
+
+<!-- if q in title -->
+    if(titlevar{{article.id}} != undefined){
+        console.log("TITLE")
+        let htmlTitle = document.getElementById("htmlTitle{{article.id}}")
+
+        <!--  for letters in title  -->
+        for(let i = 0;i<article_title{{article.id}}.length; i++){
+        <!--  if i = index of q in title   -->
+        if(i === titlevar{{article.id}}){
+            let start = i
+            for(j=start; j< start+q{{article.id}}.length; j++){
+                <!-- add letter to data -->
+                data{{article.id}} += "<span class='titleMark'>" + article_title{{article.id}}[j] + "</span>"
+            }
+            i+=q{{article.id}}.length-1
+        } else{
+        <!-- add letter to data -->
+        data{{article.id}} += article_title{{article.id}}[i]
+        }
+    }
+        console.log(data{{article.id}})
+
+
+        htmlTitle.innerHTML = data{{article.id}}
+    }
+
+
+
+<!-- if q in text -->
+    if(textvar{{article.id}} != undefined){
+        console.log("TEXT")
+
+        let htmlText = document.getElementById("htmlText{{article.id}}")
+        let done = false
+
+        <!--  for sentence in sentences  -->
+        for(sentence in sentences{{article.id}}){
+            <!--  Massive of words in sentence  -->
+            words = [sentences{{article.id}}[sentence]][0].split(" ")
+            <!--  if q in words  -->
+            if(words.indexOf(q{{article.id}}) >= 0){
+                <!--  get this word  -->
+                word = words[words.indexOf(q{{article.id}})]
+                <!--  add <span></span> to word to change text color  -->
+                words[words.indexOf(q{{article.id}})] = "<span class='textMark'>" + word + "</span>"
+                console.log(`Sentence:${words.join(" ")}  Word: ${word}`)
+                <!--  Apply changes  -->
+                htmlText.innerHTML = words.join(" ")
+                done = true
+                break;
+            }
+        }
+        if(!done){
+            <!--  for sentence in sentences  -->
+            for(sentence in sentences{{article.id}}){
+                <!--  Words massive  -->
+                wordsToShow = [sentences{{article.id}}[sentence]][0].split(" ")
+                <!--  words lower case massive  -->
+                words = [sentences{{article.id}}[sentence]][0].toLowerCase().split(" ")
+                <!--  Massive of word letters  -->
+                let wordMas = []
+                <!--  for word in words  -->
+                for(word in words){
+                    <!--  if q in word  -->
+                    if(words[word].toLowerCase().indexOf(q{{article.id}}) >= 0){
+                        wordMas[word] = wordsToShow[word].split("")
+
+                        <!--  add <span></span> to letters  -->
+                        wordMas[word][wordsToShow[word].toLowerCase().indexOf("{{q}}".toLowerCase())] = "<span class='textMark'>" + wordMas[word][wordsToShow[word].toLowerCase().indexOf("{{q}}")]
+                        wordMas[word][wordsToShow[word].toLowerCase().indexOf("{{q}}".toLowerCase()) + "{{q}}".length -1] += "</span>"
+                        wordsToShow[word] = wordMas[word].join("")
+
+                        <!--  console logs  -->
+
+                        <!--  Apply changes  -->
+                        htmlText.innerHTML = wordsToShow.join(" ")
+                    }
+                }
+            }
+        }
+    }
+
+
+    console.log(" ")
+
+
+    </script>
+    {% endif %}
     {% endfor %}
   </div>
 
+<script>
+
+</script>
 {% endblock %}

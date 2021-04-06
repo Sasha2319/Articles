@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% csrf_token %}
 {% block title %} {{article.article_title}} {% endblock %}
 
@@ -20,15 +21,16 @@
 
 
 
-<div id="lk" style="float: left; margin-top: 6px; font-size:25px;"><em>{{article.pub_date}}</em>
+<div id="lk" style="float: left; margin-top: 0px; margin-left: 10%; font-size:25px;"><em>{{article.pub_date}}</em>
 {% if article.was_published_recently %}
 <img src="https://image.flaticon.com/icons/png/512/57/57458.png" alt="NEW" width="50" style="margin-top: -3px;">
 {% endif %}
-</div>
-
-<div id="author_name" style="margin-right:30px; position:absolute; left: 1110px; top: 53px; font-size: 17px;">
+    <div id="author_name" style="display:block; margin-right: 10px; font-size:19px;">
 By {{article.author_name}}
 </div>
+</div>
+
+
 
 <div id="article_image">
 {% if article.article_image %}
@@ -56,7 +58,7 @@ By {{article.author_name}}
             <div id="commentsBox">
 {% for c in comments %}
 
-            <div class="d-flex flex-column comment-section">
+            <div class="d-flex flex-column comment-section" style="margin-top:10px;">
                 <div class="bg-white p-2">
                     <div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{static}}articles/img/avatar.jpg" width="40">
                         <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">{{c.comment_author}}</span><span class="date text-black-50">Shared publicly - {{c.cDate}}</span></div>   <!-- Jan 2020 -->
@@ -97,6 +99,7 @@ By {{article.author_name}}
 
 <script>
 const url = "{% url 'detail' article.id %}"
+const avatar_url = `{% static 'articles/img/avatar.jpg' %}`
 </script>
 
 <script src="{{static}}articles/js/detail.js"></script>
