@@ -9,7 +9,7 @@ class Article(models.Model):
     article_text = models.TextField('текст статьи', default='')
     pub_date = models.DateTimeField('дата публикации', auto_now_add=True)
     author_name = models.CharField('имя автора', max_length=55, default='')
-    article_image = models.ImageField(upload_to='img', default='')
+    article_image = models.ImageField(upload_to='img', default='', blank=True)
 
     def __str__(self):
         return self.article_title

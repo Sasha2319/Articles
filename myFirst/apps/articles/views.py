@@ -76,7 +76,18 @@ def about(request):
     return render(request, 'articles/about.html', {'static': STATIC_URL})
 
 def create(request):
-    return render(request, 'base.html', {'static': STATIC_URL})
+    if request.POST.get('nameForm'):
+        data = {}
+        data['name'] = request.POST.get('nameForm')
+        data['company'] = request.POST.get('companyForm')
+        data['text'] = request.POST.get('textForm')
+        data['title'] = request.POST.get('titleForm')
+        a = Article.objects.create(article_title=data['title'],
+                                   article_text=data['text'],
+                                   author_name=data['name'])
+        a.save()
+        return HttpResponseRedirect("/home/")
+    return render(request, 'articles/create.html', {'static': STATIC_URL})
 
 def edit(request):
     return render(request, 'base.html', {'static': STATIC_URL})

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<center><h1>New article</h1></center>
+ <div id="form" style="margin:20px;">
+    <form method="post" action="" id="articleForm">
+       {% csrf_token %}
+  <!-- 2 column grid layout with text inputs for the first and last names -->
+
+  <div class="row mb-4">
+    <div class="col">
+      <div class="form-outline">
+        <input type="text" name="nameForm" id="form6Example1" class="form-control" />
+        <label class="form-label" for="form6Example1">Author name</label>
+      </div>
+    </div>
+
+  </div>
+        <div class="row mb-4">
+    <div class="col">
+      <div class="form-outline">
+        <input type="text" name="titleForm" id="form6Example187" class="form-control" />
+        <label class="form-label" for="form6Example187">Article title</label>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Text input -->
+  <div class="form-outline mb-4">
+    <input type="text" name="companyForm" id="form6Example3" class="form-control" />
+    <label class="form-label" for="form6Example3">Company name</label>
+  </div>
+
+  <!-- Text input -->
+
+
+
+
+
+  <!-- Message input -->
+  <div class="form-outline mb-4">
+    <textarea class="form-control" name="textForm" id="form6Example7" rows="4"></textarea>
+    <label class="form-label" for="form6Example7">Article text</label>
+  </div>
+
+
+  <!-- Submit button -->
+  <button type="button" id="submitButton" class="btn btn-primary btn-block mb-4">Create article</button>
+</form>
+</div>
+<script>
+let name, company, text, title
+$("#submitButton").click(function(){
+name = $("#form6Example1").val()
+company = $("#form6Example3").val()
+text = $("#form6Example7").val()
+title = $("#form6Example187").val()
+  if(name != "" && company != "" && text != "" && title != ""){
+    $("#articleForm").submit()
+  } else{
+    alert(`All fields are required`)
+  }
+})
+</script>
+{% endblock %}
